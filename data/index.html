@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+  <script defer src="constants.js"></script>
+  <script defer src="slider.js"></script>
+  <script defer src="script.js"></script>
+  <script src="gsap.min.js"></script>
+
+  <h1>iFootage sharkNano Remote Control</h1>
+
+  <div>
+    <div class="button-row">
+      <button class="btn" onclick="toggleLCD()" id="btn-lcd">LCD</button>
+      <button class="btn" onclick="toggleCtrl()" id="btn-ctrl">CTRL</button>
+    </div>
+    <div>
+        <button class="btn" onclick="toggleA()" id="btn-a">A</button>
+        <button class="btn" onclick="toggleB()" id="btn-b">B</button>
+    </div>
+    <div id="startstopButtons">
+        <button class="btn" onclick="videoParam()" id="btn-startstop">videoParam</button>
+        <button class="btn" onclick="backOrigin()" id="btn-startstop2">backOrigin</button>
+        <button class="btn" onclick="videoStart()" id="btn-startstop3">videostart</button>
+        <button class="btn" onclick="videoStop()" id="btn-startstop4">videostop</button>
+    </div>
+    <div id="serviceButtons">
+      <button class="btn" id="GetAll" onclick="getAll()" >Get All</button>
+      <button class="btn" id="Reconnect" onclick="reconnectBluetooth()" >Reconnect</button>
+    </div>  
+  </div>
+
+  <!-- Joysticks start here -->
+  <div style="display: flex;">
+    <div class="joystick" id="sliderstick">
+      <div>
+        <p>Slider</p>
+      </div>
+    </div>
+
+    <div class="joystick" id="panstick">
+      <div>
+        <p>Pan</p>
+      </div>
+    </div>
+    
+  </div>
+  
+  <div id="slider">
+    <div class="panContainer" id="actual-panContainer">
+      <div class="panBall"></div>
+
+    <!-- Work in progress -->
+    <!-- </div>
+    <div class="panContainer" id="A-panContainer">
+      <div class="panBall"></div>
+    </div>
+    <div class="panContainer" id="B-panContainer">
+      <div class="panBall"></div>
+    </div> -->
+  </div>
+
+  <div class = "info" id = "information">
+    <h1 id = "header">Slider Values:</h1>
+
+    <div id="properties"></div>
+
+  </div>
+
+  <div id="controlButtons">
+    <button id="loop" onclick="loopButton()">
+      <img class="icons" src="./icons/repeat-outline.svg" alt="">
+    </button>
+    <button id="direction" onclick="directionButton()">Direction</button>
+  </div>
+
+
+  <div id="battery">
+    <p id="batteryLevel">0</p>
+    <img id="batteryLogo" src="./icons/battery/battery-dead-outline.svg" alt="">
+  </div>
+
+
+  <!-- In work... -->
+  <!-- <div class="dropdown" id="selectModeList">
+    <span>Select Video Mode</span>
+    <div class="dropdown-content">
+      <button>TimeLapse</button>
+      <button>Video</button>
+      <button>Stop Motion (not implemented)</button>
+    </div>
+  </div> -->
+
+</body>
+
+</html>

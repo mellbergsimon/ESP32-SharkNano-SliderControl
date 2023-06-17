@@ -1,0 +1,252 @@
+body {
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  background-color: #434343;
+  color: #fff;
+
+  font-family: 'Roboto', sans-serif;
+}
+
+button {
+  background-color: rgb(15, 97, 163);
+  color: rgb(5, 30, 51);
+
+  border: none;
+  border-radius: 5px;
+
+  padding: 10px 20px;
+  margin: 10px;
+
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.button-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+.joystick {
+  width: 320px;
+  height: 80px;
+
+  border-radius: 50px;
+  background-color: #232323;
+
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  margin: 20px;
+}
+
+.joystick div {
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  width: 70px;
+  height: 70px;
+
+  border-radius: 50%;
+  background-color: #424242;
+
+  transform: translateX(var(--jd));
+}
+
+
+.joystick:not(.moving) div {
+  transition: transform 0.2s ease-in-out;
+}
+
+
+#slider {
+  width: 320px;
+  height: 5px;
+
+  border-radius: 50px;
+  border: dotted red;
+  background-color: transparent;
+
+  display: flex;
+
+  justify-content: left;
+  align-items: center;
+  
+
+  margin: 20px;
+
+  transition: transform 0.4s linear;
+}
+
+.panContainer {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: #656565;
+
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  transition: inherit;
+}
+
+#actual-panContainer {
+  transform: translateX(var(--pos)) rotate(var(--rot));
+}
+
+#A-panContainer {
+  transform: translateX(var(--pos)) rotate(var(--rot));
+}
+
+#B-panContainer {
+  transform: translateX(var(--pos)) rotate(var(--rot));
+}
+
+.panBall {
+  background: purple;
+  border-radius: 50%;
+  width: 30%;
+  height: 30%;
+}
+
+p {
+  margin: 0 1vw 0 1vw;
+  font-family: source code pro;
+  font-size: 1.5vh;
+}
+
+#information {
+  position: absolute;
+  left: 2vw;
+  top: 1vh;
+  padding: 0;
+  margin: 0;
+  #properties{
+    font-size: medium;
+  }
+}
+.info > * {
+  margin: 0;
+}
+
+#serviceButtons {
+  display: flex;
+  position: absolute;
+  top: 1vh;
+  right: 1vw;
+}
+
+#startstopButtons {
+  display: flex;
+  position: absolute;
+  top: 10vh;
+  right: 1vw;
+}
+
+.btn {
+  background-color: #232323;
+  color: #fff;
+}
+
+.btn[data-state="1"] {
+  background-color: rgb(15, 97, 163);
+  color: rgb(5, 30, 51);
+}
+
+h1 {
+  font-family: source code pro;
+}
+
+h2 {
+  margin: 1vh;
+}
+
+
+#loop {
+  position: absolute;
+  top: 10vh;
+  left: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background: #121212;
+}
+
+#direction {
+  position: absolute;
+  top: 10vh;
+  left: 25vw;
+}
+
+
+
+#battery {
+  position: absolute;
+  top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.5vh;
+  width: 50px;
+  height: 50px;
+  background: transparent;
+}
+
+#batteryLevel {
+  margin: 5px;
+}
+
+img {
+  width: 40px;
+  height: 40px;
+}
+
+
+
+.dropdown {
+  position: absolute;
+  top: 20vh;
+  right: 1vw;
+  font-size: large;
+  background-color: 0;
+}
+
+.dropdown-content {
+  
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 12px 16px;
+  z-index: 1;
+}
+
+.dropdown-content > * {
+  all: unset;
+  background-color: null;
+  border-radius: 0;
+  background: none;
+
+  align-items: left;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}

@@ -1,0 +1,40 @@
+
+This directory is intended for PlatformIO Test Runner and project tests.
+
+Unit Testing is a software testing method by which individual units of
+source code, sets of one or more MCU program modules together with associated
+control data, usage procedures, and operating procedures, are tested to
+determine whether they are fit for use. Unit testing finds problems early
+in the development cycle.
+
+More information about PlatformIO Unit Testing:
+- https://docs.platformio.org/en/latest/advanced/unit-testing/index.html
+
+
+
+Backtrace: 0x400839fd:0x3ffe2810 0x40093365:0x3ffe2830 0x4009920d:0x3ffe2850 0x4017780b:0x3ffe28d0 0x40177852:0x3ffe28f0 0x401777b3:0x3ffe2910 0x40177be2:0x3ffe2930 0x40178405:0x3ffe2950 0x400d2e64:0x3ffe2970 0x40190996:0x3ffe2990 0x400d670d:0x3ffe29b0 0x400db889:0x3ffe2a30 0x400db8d3:0x3ffe2a50 0x400dccec:0x3ffe2a70 0x400db5c5:0x3ffe2ad0 0x400d9ab1:0x3ffe2af0 0x400e0c37:0x3ffe2b20 0x400df6fc:0x3ffe2b50 0x400df707:0x3ffe2b70 0x40081416:0x3ffe2b90 0x400d6e7b:0x3ffe2bb0
+
+  #0  0x400839fd:0x3ffe2810 in panic_abort at /Users/ficeto/Desktop/ESP32/ESP32S2/esp-idf-public/components/esp_system/panic.c:402
+  #1  0x40093365:0x3ffe2830 in esp_system_abort at /Users/ficeto/Desktop/ESP32/ESP32S2/esp-idf-public/components/esp_system/esp_system.c:128
+  #2  0x4009920d:0x3ffe2850 in abort at /Users/ficeto/Desktop/ESP32/ESP32S2/esp-idf-public/components/newlib/abort.c:46
+  #3  0x4017780b:0x3ffe28d0 in __cxxabiv1::__terminate(void (*)()) at /builds/idf/crosstool-NG/.build/HOST-x86_64-w64-mingw32/xtensa-esp32-elf/src/gcc/libstdc++-v3/libsupc++/eh_terminate.cc:47
+  #4  0x40177852:0x3ffe28f0 in std::terminate() at /builds/idf/crosstool-NG/.build/HOST-x86_64-w64-mingw32/xtensa-esp32-elf/src/gcc/libstdc++-v3/libsupc++/eh_terminate.cc:57
+  #5  0x401777b3:0x3ffe2910 in __cxa_throw at /builds/idf/crosstool-NG/.build/HOST-x86_64-w64-mingw32/xtensa-esp32-elf/src/gcc/libstdc++-v3/libsupc++/eh_throw.cc:95
+  #6  0x40177be2:0x3ffe2930 in operator new(unsigned int) at /builds/idf/crosstool-NG/.build/HOST-x86_64-w64-mingw32/xtensa-esp32-elf/src/gcc/libstdc++-v3/libsupc++/new_op.cc:54
+  #7  0x40178405:0x3ffe2950 in operator new[](unsigned int) at /builds/idf/crosstool-NG/.build/HOST-x86_64-w64-mingw32/xtensa-esp32-elf/src/gcc/libstdc++-v3/libsupc++/new_opv.cc:32        
+  #8  0x400d2e64:0x3ffe2970 in notifyCallback(NimBLERemoteCharacteristic*, unsigned char*, unsigned int, bool) at src/nanoBluetooth.cpp:44
+  #9  0x40190996:0x3ffe2990 in std::_Function_handler<void (NimBLERemoteCharacteristic*, unsigned char*, unsigned int, bool), void (*)(NimBLERemoteCharacteristic*, unsigned char*, unsigned int, bool)>::_M_invoke(std::_Any_data const&, NimBLERemoteCharacteristic*&&, unsigned char*&&, unsigned int&&, bool&&) at c:\users\simme\.platformio\packages\toolchain-xtensa-esp32@8.4.0+2021r2-patch5\xtensa-esp32-elf\include\c++\8.4.0\bits/std_function.h:297
+  #10 0x400d670d:0x3ffe29b0 in std::function<void (NimBLERemoteCharacteristic*, unsigned char*, unsigned int, bool)>::operator()(NimBLERemoteCharacteristic*, unsigned char*, unsigned int, 
+bool) const at c:\users\simme\.platformio\packages\toolchain-xtensa-esp32@8.4.0+2021r2-patch5\xtensa-esp32-elf\include\c++\8.4.0\bits/std_function.h:687
+      (inlined by) NimBLEClient::handleGapEvent(ble_gap_event*, void*) at .pio/libdeps/esp32-poe-iso/NimBLE-Arduino/src/NimBLEClient.cpp:1055
+  #11 0x400db889:0x3ffe2a30 in ble_gap_call_event_cb at .pio/libdeps/esp32-poe-iso/NimBLE-Arduino/src/nimble/nimble/host/src/ble_gap.c:748
+  #12 0x400db8d3:0x3ffe2a50 in ble_gap_call_conn_event_cb at .pio/libdeps/esp32-poe-iso/NimBLE-Arduino/src/nimble/nimble/host/src/ble_gap.c:774
+  #13 0x400dccec:0x3ffe2a70 in ble_gap_notify_rx_event at .pio/libdeps/esp32-poe-iso/NimBLE-Arduino/src/nimble/nimble/host/src/ble_gap.c:6223
+  #14 0x400db5c5:0x3ffe2ad0 in ble_att_svr_rx_notify at .pio/libdeps/esp32-poe-iso/NimBLE-Arduino/src/nimble/nimble/host/src/ble_att_svr.c:2487
+  #15 0x400d9ab1:0x3ffe2af0 in ble_att_rx at .pio/libdeps/esp32-poe-iso/NimBLE-Arduino/src/nimble/nimble/host/src/ble_att.c:504
+  #16 0x400e0c37:0x3ffe2b20 in ble_hs_hci_evt_acl_process at .pio/libdeps/esp32-poe-iso/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_hci_evt.c:950
+  #17 0x400df6fc:0x3ffe2b50 in ble_hs_process_rx_data_queue at .pio/libdeps/esp32-poe-iso/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs.c:254
+  #18 0x400df707:0x3ffe2b70 in ble_hs_event_rx_data at .pio/libdeps/esp32-poe-iso/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs.c:562
+  #19 0x40081416:0x3ffe2b90 in ble_npl_event_run at .pio/libdeps/esp32-poe-iso/NimBLE-Arduino/src/nimble/porting/npl/freertos/include/nimble/nimble_npl_os.h:526
+      (inlined by) nimble_port_run at .pio/libdeps/esp32-poe-iso/NimBLE-Arduino/src/nimble/porting/nimble/src/nimble_port.c:269
+  #20 0x400d6e7b:0x3ffe2bb0 in NimBLEDevice::host_task(void*) at .pio/libdeps/esp32-poe-iso/NimBLE-Arduino/src/NimBLEDevice.cpp:836
