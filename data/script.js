@@ -6,6 +6,27 @@ let serverURL = "http://sharknano-server.local";
 let websocketURL = "ws://sharknano-server.local/ws";
 var ws;
 
+//Statemachine
+let buttonState = "standby";
+let backOriginCounter = 0;
+const standbyButton = document.getElementById("btn-standby");
+const videoStartButton = document.getElementById("btn-videoStart");
+const videoStopBtn = document.getElementById("btn-videoStop");
+
+const directionBtn = document.getElementById("direction");
+
+
+// Elements
+const sliderElement = document.getElementById("slider");
+
+const btnLCD = document.getElementById("btn-lcd");
+const btnCtrl = document.getElementById("btn-ctrl");
+const btnA = document.getElementById("btn-a");
+const btnB = document.getElementById("btn-b");
+const btnStart = document.getElementById("btn-start");
+const btnStart2 = document.getElementById("btn-start2");
+
+
 const cs = {};
 properties.forEach((property) => (cs[property] = 0));
 displayValues();
@@ -16,6 +37,8 @@ function connect() {
   ws.onopen = function () {
     // subscribe to some channels
     console.log("Connected.");
+    reconnectBluetooth();
+    getAll();
   };
 
   ws.onmessage = function (e) {
@@ -37,20 +60,15 @@ function connect() {
     console.error("Socket encountered error: ", err.message, "Closing socket");
     ws.close();
   };
+
+
+  changeStartButtonState("standby");
 }
 
 connect();
 
 addEventListener("message", (event) => {});
 
-const sliderElement = document.getElementById("slider");
-
-const btnLCD = document.getElementById("btn-lcd");
-const btnCtrl = document.getElementById("btn-ctrl");
-const btnA = document.getElementById("btn-a");
-const btnB = document.getElementById("btn-b");
-const btnStart = document.getElementById("btn-start");
-const btnStart2 = document.getElementById("btn-start2");
 
 function newMessage(event) {
   const data = JSON.parse(event.data);
@@ -66,6 +84,30 @@ function newMessage(event) {
   displayValues();
   updateBattery();
   //updatePanPositions();
+
+
+  if ("BackOrigin" in data) {
+    buttonState = "standby";
+    backOriginCounter++;
+
+    console.log("backOrigin received. buttonCounter is: " + backOriginCounter);
+    if (buttonState === "standby" && backOriginCounter > 1) {
+      changeStartButtonState("start");
+      backOriginCounter = 0;
+    }
+
+  }
+
+  if ("VideoStart" in data) {
+    if (data.VideoStart.AllDone === 1) {
+
+      console.log("Done");
+      changeStartButtonState("standby");
+
+    }
+  }
+
+  document.getElementById("whatevertext").innerText = "Buttonstate: " + buttonState;
 }
 
 function updatePanPositions() {
@@ -84,11 +126,53 @@ function updateBattery() {
   if (cs.Battery > 70) state = "full";
   if (cs.ChargeStatus == 1) state = "charging";
 
-  batLogo.src = `./icons/battery/battery-${state}-outline.svg`;
+  batLogo.src = `./icons/bat/bat-${state}.svg`;
 
   batLevel.innerText = cs.Battery + "%";
 }
 
+
+
+
+function changeStartButtonState(state) {
+  console.log("changeBtnState: " + state);
+  if (state == "stop") {
+    buttonState = "stop";
+    showButton("stop");
+
+  } else if (state == "standby") {
+    buttonState == "standby";
+    showButton("standby");
+
+  } else if (state == "start") {
+    buttonState == "start";
+    showButton("start");
+  }
+}
+
+
+function showButton(show) {
+  standbyButton.style.display = "none";
+  videoStartButton.style.display = "none";
+  videoStopBtn.style.display = "none";
+
+  if (show == "standby") {
+    standbyButton.style.display = "block";
+    btnCtrl.style.display = "block";
+    directionBtn.style.display = "block";
+
+  } else if (show == "stop") {
+    videoStopBtn.style.display = "block";
+    btnCtrl.style.display = "none";
+    directionBtn.style.display = "none";
+
+
+  } else if (show == "start") {
+    videoStartButton.style.display = "block";
+
+
+  }
+}
 
 function displayValues() {
   const propertiesElement = document.getElementById("properties");
@@ -278,10 +362,7 @@ function videoParam() {
   sendJSON(obj);
 }
 
-
-
-
-function backOrigin() {
+function standby() {
   obj = {
     BackOrigin: {
       Direction: cs.RunDir,
@@ -290,22 +371,15 @@ function backOrigin() {
       Seril: 7
     },
   };
-  // obj = {
-  //   VideoStart: {
-  //     Direction: 0,
-  //     RepType: 0,
-  //     VideoRun: 3,
-  //     RetryCount: 0,
-  //     Seril: 19,
-  //   },
-  // };
+
   sendJSON(obj);
 }
 
 function videoStart() {
-  // @TR{"VideoStart":{"Direction":1,"RepType":0,"VideoRun":3,"RetryCount":1,"Seril":19}}
 
-  obj = {
+  videoParam();
+
+  let obj = {
     VideoStart: {
       Direction: cs.RunDir,
       RepType: 0,
@@ -315,6 +389,7 @@ function videoStart() {
     },
   };
   sendJSON(obj);
+  changeStartButtonState("stop");
 }
 
 function videoStop() {
@@ -330,6 +405,7 @@ function videoStop() {
     },
   };
   sendJSON(obj);
+  changeStartButtonState("standby");
 }
 
 
@@ -373,6 +449,7 @@ sliderFactory(sliderStickElement, (value) => {
     lastSliderValueSent = sliderSpeed;
     lastSliderSent = Date.now();
     updateVelocity();
+    changeStartButtonState("standby");
   }
 });
 
@@ -385,6 +462,7 @@ sliderFactory(panStickElement, (value) => {
     lastPanValueSent = panSpeed;
     lastPanSent = Date.now();
     updateVelocity();
+    changeStartButtonState("standby");
   }
 });
 

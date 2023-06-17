@@ -24,10 +24,9 @@
         <button class="btn" onclick="toggleB()" id="btn-b">B</button>
     </div>
     <div id="startstopButtons">
-        <button class="btn" onclick="videoParam()" id="btn-startstop">videoParam</button>
-        <button class="btn" onclick="backOrigin()" id="btn-startstop2">backOrigin</button>
-        <button class="btn" onclick="videoStart()" id="btn-startstop3">videostart</button>
-        <button class="btn" onclick="videoStop()" id="btn-startstop4">videostop</button>
+        <button class="btn" onclick="standby()" id="btn-standby">Standby</button>
+        <button class="btn" onclick="videoStart()" id="btn-videoStart">Start</button>
+        <button class="btn" onclick="videoStop()" id="btn-videoStop">Stop</button>
     </div>
     <div id="serviceButtons">
       <button class="btn" id="GetAll" onclick="getAll()" >Get All</button>
@@ -82,9 +81,26 @@
 
   <div id="battery">
     <p id="batteryLevel">0</p>
-    <img id="batteryLogo" src="./icons/battery/battery-dead-outline.svg" alt="">
+    <img id="batteryLogo" src="./icons/bat/bat-dead.svg" alt="">
   </div>
 
+  <div id="Timevalues">
+    <h1>Video Parameters:</h1>
+    <span>Time: </span>
+    <input type="number" name="Time" id="videoTime" min="10" max="60" step="1" value="20">
+    <span>seconds</span>
+
+  </div>
+
+  <div id="howtouse"><h>Användarguide:</h>
+    <p>Ställ in position med spakarna. Lås in position A med knappen A och detsamma för position B.</p>
+    <br>
+    <p>-CTRL måste vara blå för att kunna styra slidern.</p>
+    <br>
+    <p>-Direction är oviktigt. Det är vilken riktning rörelsen ska starta. Däremot är repeatfunktionen viktig. Den nollställer mellan varje stopp. Går att aktivera medans slider kör.</p>
+    <br>
+    <p>-Positionerna A och B sparas mellan start och stop.</p>
+  </div>
 
   <!-- In work... -->
   <!-- <div class="dropdown" id="selectModeList">

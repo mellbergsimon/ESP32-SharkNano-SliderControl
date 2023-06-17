@@ -3,7 +3,6 @@
 
 #include "NimBLEDevice.h"
 #include "nanoWebServer.h"
-#include "ArduinoJson.h"
 
 // The remote service we wish to connect to.
 static BLEUUID serviceUUID("0000FFF0-0000-1000-8000-00805F9B34FB");
@@ -69,6 +68,6 @@ bool connectToServer();
 void bluetoothsetup();
 void bluetoothLoop();
 
-void handleJson(const JsonDocument& doc);
+void handleJson(char *jsonstr);
 
 #endif

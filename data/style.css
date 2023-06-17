@@ -93,7 +93,7 @@ button {
 }
 
 .panContainer {
-  width: 35px;
+  width: 200px;
   height: 35px;
   border-radius: 50%;
   background-color: #656565;
@@ -129,6 +129,22 @@ p {
   font-size: 1.5vh;
 }
 
+span {
+  font-family: source code pro;
+}
+
+h {
+  font-family: source code pro;
+  font-size: 2vh;
+}
+
+#howtouse {
+  position: relative;
+  display: flexbox;
+  top: -40vh;
+  right: -30vw;
+}
+
 #information {
   position: absolute;
   left: 2vw;
@@ -143,6 +159,11 @@ p {
   margin: 0;
 }
 
+#Timevalues {
+  position: absolute;
+  right: 10vw;
+}
+
 #serviceButtons {
   display: flex;
   position: absolute;
@@ -152,9 +173,9 @@ p {
 
 #startstopButtons {
   display: flex;
-  position: absolute;
-  top: 10vh;
-  right: 1vw;
+  position: relative;
+  top: auto;
+  right: auto;
 }
 
 .btn {
