@@ -261,3 +261,17 @@ img {
   height: 40px;
 }
 
+.input-field {
+  width: 100px;
+  margin: 2px;
+  padding: 5px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #2196F3;
+  box-shadow: 0 0 5px #2196F3;
+}

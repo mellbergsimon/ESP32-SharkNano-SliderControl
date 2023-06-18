@@ -72,10 +72,6 @@ connect();
 
 addEventListener("message", (event) => {});
 
-let skipSetA = false;
-let skipSetB = false;
-
-
 
 function newMessage(event) {
   //Parse JSON string.
@@ -114,8 +110,8 @@ function newMessage(event) {
   updateBtnBackgrounds();
   displayValues();
   updateBattery();
-  //updatePanPositions();
 
+  //Below is what will need to happen at each different input.
 
   if ("AdjPosition" in data) {
     console.log("Pan1: " + cs.Pan1 + ", PanActualPos: " + cs.PanActualPos);
@@ -152,7 +148,6 @@ function newMessage(event) {
     document.getElementById("onTime").innerText = convertSecondsToHMS(cs.SysTemTime)
   }
 
-
   if ("ExchangeDirection" in data) {
     cs.RunDir = 1 - cs.RunDir;
     callBack();
@@ -163,13 +158,13 @@ function newMessage(event) {
     cs.SetA = cs.SetAStatus;
     cs.SetB = cs.SetBStatus;
   }
+
   if (runState == false && ("PositionInfo" in data || "AdjPosition" in data)) {
     updatePositions();
   } else if (runState == true) {
     runningPositions(cs.Progress);
   }
 }
-
 
 function convertSecondsToHMS(seconds) {
   const hours = Math.floor(seconds / 3600);
@@ -198,7 +193,6 @@ function updateBattery() {
 }
 
 function changeStartButtonState(state) {
-  console.log("changeBtnState: " + state);
   if (state == "stop") {
     buttonState = "stop";
     showButtons("stop");
@@ -496,7 +490,6 @@ function videoStop() {
   };
   sendJSON(obj);
 }
-
 
 function updateVelocity() {
   let obj = {

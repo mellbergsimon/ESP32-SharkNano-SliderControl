@@ -1,24 +1,3 @@
-const infos = [
-  'DeviceInfo',
-  'PositionInfo',
-  'BasicInfo',
-  'CtrlLcd',
-  'SetPoint',
-  'TorqueCtrl',
-  'CallBack',
-  'VideoStart',
-  'ManualCallback',
-  'AdjPosition',
-  'ReConnect',
-  'ManualLoop',
-  'BackOrigin',
-  'PlatformType',
-  'ABPreview',
-  'ExchangeDirection',
-  'Loop',
-
-];
-
 const properties = [
   "BleName1",
   "TrackLen1",
