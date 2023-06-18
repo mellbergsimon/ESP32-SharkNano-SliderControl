@@ -1,109 +1,133 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
 
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" href="style.css">
-</head>
+  <body>
+    <script defer src="constants.js"></script>
+    <script defer src="slider.js"></script>
+    <script defer src="script.js"></script>
+    <script src="gsap.min.js"></script>
 
-<body>
-  <script defer src="constants.js"></script>
-  <script defer src="slider.js"></script>
-  <script defer src="script.js"></script>
-  <script src="gsap.min.js"></script>
+    <h1>iFootage sharkNano Remote Control</h1>
 
-  <h1>iFootage sharkNano Remote Control</h1>
+    <div id="container">
+      <button id="direction" onclick="directionButton()">Direction</button>
+      <button id="loop" onclick="loopButton()">
+        <img class="icons" src="./icons/repeat-outline.svg" alt="" />
+      </button>
 
-  <div>
-    <div class="button-row">
-      <button class="btn" onclick="toggleLCD()" id="btn-lcd">LCD</button>
-      <button class="btn" onclick="toggleCtrl()" id="btn-ctrl">CTRL</button>
-    </div>
-    <div>
+      <div class="button-row">
+        <button class="btn" onclick="toggleCtrl()" id="btn-ctrl">CTRL</button>
+
         <button class="btn" onclick="toggleA()" id="btn-a">A</button>
         <button class="btn" onclick="toggleB()" id="btn-b">B</button>
+      </div>
+      <div id="serviceButtons">
+        <button class="btn" onclick="toggleLCD()" id="btn-lcd">LCD</button>
+        <button class="btn" id="GetAll" onclick="getAll()">Get All</button>
+        <button class="btn" id="Reconnect" onclick="reconnectBluetooth()">
+          Reconnect
+        </button>
+      </div>
     </div>
+
     <div id="startstopButtons">
-        <button class="btn" onclick="standby()" id="btn-standby">Standby</button>
-        <button class="btn" onclick="videoStart()" id="btn-videoStart">Start</button>
-        <button class="btn" onclick="videoStop()" id="btn-videoStop">Stop</button>
+      <button class="btn" onclick="standby()" id="btn-standby">Standby</button>
+      <button class="btn" onclick="videoStart()" id="btn-videoStart">
+        Start
+      </button>
+      <button class="btn" onclick="videoStop()" id="btn-videoStop">Stop</button>
     </div>
-    <div id="serviceButtons">
-      <button class="btn" id="GetAll" onclick="getAll()" >Get All</button>
-      <button class="btn" id="Reconnect" onclick="reconnectBluetooth()" >Reconnect</button>
-    </div>  
-  </div>
 
-  <!-- Joysticks start here -->
-  <div style="display: flex;">
-    <div class="joystick" id="sliderstick">
-      <div>
-        <p>Slider</p>
+    <!-- Joysticks start here -->
+    <div style="display: flex">
+      <div class="joystick" id="sliderstick">
+        <div>
+          <p>Slider</p>
+        </div>
+      </div>
+
+      <div class="joystick" id="panstick">
+        <div>
+          <p>Pan</p>
+        </div>
       </div>
     </div>
 
-    <div class="joystick" id="panstick">
-      <div>
-        <p>Pan</p>
+    <div id="slider">
+      <div class="panContainer" id="actual-panContainer">
+        <div class="panBall"></div>
+      </div>
+
+      <div class="panContainer" id="A-panContainer">
+        A
+        <div class="panBall"></div>
+      </div>
+
+      <div class="panContainer" id="B-panContainer">
+        B
+        <div class="panBall"></div>
       </div>
     </div>
-    
-  </div>
-  
-  <div id="slider">
-    <div class="panContainer" id="actual-panContainer">
-      <div class="panBall"></div>
 
-    <!-- Work in progress -->
-    <!-- </div>
-    <div class="panContainer" id="A-panContainer">
-      <div class="panBall"></div>
+    <div class="info" id="information">
+      <div id="properties"></div>
     </div>
-    <div class="panContainer" id="B-panContainer">
-      <div class="panBall"></div>
-    </div> -->
-  </div>
 
-  <div class = "info" id = "information">
-    <h1 id = "header">Slider Values:</h1>
+    <div id="battery">
+      <p id="batteryLevel">0</p>
+      <img id="batteryLogo" src="./icons/bat/bat-dead.svg" alt="" />
+      <p id="onTime"></p>
+    </div>
 
-    <div id="properties"></div>
+    <div id="videoParams">
+      <h2>Video Parameters:</h2>
+      <span>Time (s): </span>
+      <input
+        type="number"
+        name="Time"
+        id="videoTime"
+        min="10"
+        max="1000"
+        step="1"
+        value="22"
+        onchange="timeChanged()"
+      />
+      <br />
+      <span>Speed(%): </span>
+      <input
+        type="number"
+        name="Speed"
+        id="videoSpeed"
+        min="1"
+        max="44"
+        step="1"
+        value="40"
+        onchange="speedChanged()"
+      />
+    </div>
 
-  </div>
+    <div id="howtouse">
+      <h2>Användarguide:</h2>
+      <p>
+        Ställ in position med spakarna. Lås in position A med knappen A och
+        detsamma för position B.
+      </p>
+      <br />
+      <p>-CTRL måste vara blå för att kunna styra slidern.</p>
+      <br />
+      <p>-Observera att repeat nollställer mellan varje start och stop.</p>
+      <br />
+      <p>-Positionerna A och B sparas mellan start och stop.</p>
+      <br />
+      <p>-Använd helst speed för att välja hastighet på slidern.</p>
+    </div>
 
-  <div id="controlButtons">
-    <button id="loop" onclick="loopButton()">
-      <img class="icons" src="./icons/repeat-outline.svg" alt="">
-    </button>
-    <button id="direction" onclick="directionButton()">Direction</button>
-  </div>
-
-
-  <div id="battery">
-    <p id="batteryLevel">0</p>
-    <img id="batteryLogo" src="./icons/bat/bat-dead.svg" alt="">
-  </div>
-
-  <div id="Timevalues">
-    <h1>Video Parameters:</h1>
-    <span>Time: </span>
-    <input type="number" name="Time" id="videoTime" min="10" max="60" step="1" value="20">
-    <span>seconds</span>
-
-  </div>
-
-  <div id="howtouse"><h>Användarguide:</h>
-    <p>Ställ in position med spakarna. Lås in position A med knappen A och detsamma för position B.</p>
-    <br>
-    <p>-CTRL måste vara blå för att kunna styra slidern.</p>
-    <br>
-    <p>-Direction är oviktigt. Det är vilken riktning rörelsen ska starta. Däremot är repeatfunktionen viktig. Den nollställer mellan varje stopp. Går att aktivera medans slider kör.</p>
-    <br>
-    <p>-Positionerna A och B sparas mellan start och stop.</p>
-  </div>
-
-  <!-- In work... -->
-  <!-- <div class="dropdown" id="selectModeList">
+    <!-- In work... -->
+    <!-- <div class="dropdown" id="selectModeList">
     <span>Select Video Mode</span>
     <div class="dropdown-content">
       <button>TimeLapse</button>
@@ -111,7 +135,5 @@
       <button>Stop Motion (not implemented)</button>
     </div>
   </div> -->
-
-</body>
-
+  </body>
 </html>

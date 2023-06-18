@@ -113,8 +113,8 @@ void sendJsontoWeb(char *jsonInput, int length)
   // Send jsonInput to websock
   if (websock.availableForWriteAll())
   {
-    Serial.print("Sending to websocket: ");
-    Serial.println(jsonInput);
+    //Serial.print("Sending to websocket: ");
+    //Serial.println(jsonInput);
     websock.textAll(jsonInput, length);
   }
 }

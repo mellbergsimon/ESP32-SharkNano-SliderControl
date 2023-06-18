@@ -114,7 +114,7 @@ void handleJson(char *jsonstr)
  */
 static void notifyCallback(BLERemoteCharacteristic *pBLERemoteCharacteristic, uint8_t *pData, size_t length, bool isNotify)
 {
-  Serial.println("------------------- NEW MESSAGE -------------------");
+  // Serial.println("------------------- NEW MESSAGE -------------------");
 
   // End pData buffer at correct length.
   pData[length] = '\0';

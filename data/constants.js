@@ -1,13 +1,13 @@
 const infos = [
-  'DeviceInfo', 
-  'PositionInfo', 
-  'BasicInfo', 
-  'CtrlLcd', 
-  'SetPoint', 
-  'TorqueCtrl', 
-  'CallBack', 
-  'VideoStart', 
-  'ManualCallback', 
+  'DeviceInfo',
+  'PositionInfo',
+  'BasicInfo',
+  'CtrlLcd',
+  'SetPoint',
+  'TorqueCtrl',
+  'CallBack',
+  'VideoStart',
+  'ManualCallback',
   'AdjPosition',
   'ReConnect',
   'ManualLoop',
@@ -16,7 +16,7 @@ const infos = [
   'ABPreview',
   'ExchangeDirection',
   'Loop',
-  
+
 ];
 
 const properties = [
@@ -33,17 +33,15 @@ const properties = [
   "Battery",
   "ChargeStatus",
   "LcdStatus",
+  "TorqueStatus",
   "Code",
   "CombinationType",
   "OriginStatus",
   "Slider1",
   "Pan1",
-  "TorqueStatus",
-  "SetA",
   "SliderAPos",
-  "PanAPos",
-  "SetB",
   "SliderBPos",
+  "PanAPos",
   "PanBPos",
   "SliderActualPos",
   "PanActualPos",
@@ -59,8 +57,9 @@ const properties = [
   "Speed",
   "Delay",
   "Status",
-  "CtrlCmd",
   "RunMode",
   "RunCmd",
-  "Seril"
+  "Seril",
+  "SetA",
+  "SetB",
 ];

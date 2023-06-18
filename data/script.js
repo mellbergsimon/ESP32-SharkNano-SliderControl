@@ -8,7 +8,10 @@ var ws;
 
 //Statemachine
 let buttonState = "standby";
-let backOriginCounter = 0;
+
+let runState = false;
+
+
 const standbyButton = document.getElementById("btn-standby");
 const videoStartButton = document.getElementById("btn-videoStart");
 const videoStopBtn = document.getElementById("btn-videoStop");
@@ -69,16 +72,44 @@ connect();
 
 addEventListener("message", (event) => {});
 
+let skipSetA = false;
+let skipSetB = false;
+
+
 
 function newMessage(event) {
+  //Parse JSON string.
   const data = JSON.parse(event.data);
+
+  //Log the data
   console.log(data);
 
-  infos.forEach((v) => Object.assign(cs, data[v]));
+  //Save the data from input.
+  Object.entries(data).forEach(([key, value]) => {
+    Object.entries(value).forEach(([nestedKey, nestedValue]) => {
 
-  cs.Pan1 = cs.PanActualPos;
-  // cs.Slider1 = cs.SliderActualPos;
-  if (data.PositionInfo || data.AdjPosition) updatePositions();
+
+      // Do not collect PanPos or SliderPos if SetA or SetB is 255.
+      if (value["SetA"] == 255 && nestedKey == "PanAPos") {
+        return;
+      }
+      if (value["SetB"] == 255 && nestedKey == "PanBPos") {
+        return;
+      }
+      if (value["SetA"] == 255 && nestedKey == "SliderAPos") {
+        return;
+      }
+      if (value["SetB"] == 255 && nestedKey == "SliderBPos") {
+        return;
+      }
+
+
+      // Collect values from json input.
+      if (nestedValue !== 255 && nestedValue !== 65535) {
+        cs[`${nestedKey}`] = nestedValue;
+      }
+    });
+  });
 
   updateBtnBackgrounds();
   displayValues();
@@ -86,35 +117,70 @@ function newMessage(event) {
   //updatePanPositions();
 
 
-  if ("BackOrigin" in data) {
-    buttonState = "standby";
-    backOriginCounter++;
+  if ("AdjPosition" in data) {
+    console.log("Pan1: " + cs.Pan1 + ", PanActualPos: " + cs.PanActualPos);
+    cs.Pan1 = cs.PanActualPos;
+    console.log("Pan1: " + cs.Pan1 + ", PanActualPos: " + cs.PanActualPos);
+  }
 
-    console.log("backOrigin received. buttonCounter is: " + backOriginCounter);
-    if (buttonState === "standby" && backOriginCounter > 1) {
-      changeStartButtonState("start");
-      backOriginCounter = 0;
+  if ("PositionInfo" in data) {
+    if (runState === false) {
+      cs.OriginStatus === 1 ? changeStartButtonState("start") : changeStartButtonState("standby");
     }
-
   }
 
   if ("VideoStart" in data) {
     if (data.VideoStart.AllDone === 1) {
-
-      console.log("Done");
+      runState = false;
       changeStartButtonState("standby");
 
+    } else if (data.VideoStart.StartMode === 0) {
+      runState = false;
+      changeStartButtonState("standby");
+
+    } else if (data.VideoStart.StartMode === 2) {
+      changeStartButtonState("stop");
+      runState = true;
+
+    } else if (data.VideoStart.AllDone === 0) {
+      runState = true;
+      changeStartButtonState("stop");
     }
   }
 
-  document.getElementById("whatevertext").innerText = "Buttonstate: " + buttonState;
+  if ("BasicInfo" in data) {
+    document.getElementById("onTime").innerText = convertSecondsToHMS(cs.SysTemTime)
+  }
+
+
+  if ("ExchangeDirection" in data) {
+    cs.RunDir = 1 - cs.RunDir;
+    callBack();
+  }
+
+  if ("ReConnect" in data) {
+    cs.RunDir = cs.Direction;
+    cs.SetA = cs.SetAStatus;
+    cs.SetB = cs.SetBStatus;
+  }
+  if (runState == false && ("PositionInfo" in data || "AdjPosition" in data)) {
+    updatePositions();
+  } else if (runState == true) {
+    runningPositions(cs.Progress);
+  }
 }
 
-function updatePanPositions() {
-  console.log(cs.SliderAPos + " " +
-    cs.PanAPos + " " +
-    cs.SliderBPos + " " +
-    cs.PanBPos + " loopCMD is: " + cs.LoopCmd);
+
+function convertSecondsToHMS(seconds) {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  const formattedHours = String(hours).padStart(2, "0");
+  const formattedMinutes = String(minutes).padStart(2, "0");
+  const formattedSeconds = String(remainingSeconds).padStart(2, "0");
+
+  return formattedHours + ":" + formattedMinutes + ":" + formattedSeconds;
 }
 
 function updateBattery() {
@@ -131,27 +197,23 @@ function updateBattery() {
   batLevel.innerText = cs.Battery + "%";
 }
 
-
-
-
 function changeStartButtonState(state) {
   console.log("changeBtnState: " + state);
   if (state == "stop") {
     buttonState = "stop";
-    showButton("stop");
+    showButtons("stop");
 
   } else if (state == "standby") {
     buttonState == "standby";
-    showButton("standby");
+    showButtons("standby");
 
   } else if (state == "start") {
     buttonState == "start";
-    showButton("start");
+    showButtons("start");
   }
 }
 
-
-function showButton(show) {
+function showButtons(show) {
   standbyButton.style.display = "none";
   videoStartButton.style.display = "none";
   videoStopBtn.style.display = "none";
@@ -169,6 +231,8 @@ function showButton(show) {
 
   } else if (show == "start") {
     videoStartButton.style.display = "block";
+    directionBtn.style.display = "block";
+    btnCtrl.style.display = "block";
 
 
   }
@@ -187,7 +251,7 @@ function displayValues() {
 
 function updateBtnBackgrounds() {
   gsapChange("btn-lcd", cs.LcdStatus);
-  gsapChange("btn-ctrl", cs.CtrlCmd);
+  gsapChange("btn-ctrl", cs.TorqueStatus);
   handleAB("btn-a", cs.SetA);
   handleAB("btn-b", cs.SetB);
   gsapChange("loop", cs.LoopCmd);
@@ -196,9 +260,9 @@ function updateBtnBackgrounds() {
 
 function handleAB(ID, value) {
   if (value == 255) {
-    gsapfunc(ID, "red", "rgb(40, 6, 6)");
+    gsapfunc(ID, "#121212", "white");
   } else if (value == 1) {
-    gsapfunc(ID, "rgb(15, 97, 163)", "rgb(5, 30, 51)");
+    gsapfunc(ID, "red", "white");
   } else if (value == 0) {
     gsapfunc(ID, "#232323", "fff");
   }
@@ -224,8 +288,8 @@ function gsapChange(ID, toggle) {
     gsap.to(document.getElementById(ID), {
       // this is the vars object
       // it contains properties to animate
-      background: "red",
-      color: "rgb(40, 6, 6)",
+      background: "#121212",
+      color: "white",
       // and special properties
       duration: 1,
     });
@@ -234,8 +298,8 @@ function gsapChange(ID, toggle) {
     gsap.to(document.getElementById(ID), {
       // this is the vars object
       // it contains properties to animate
-      background: "rgb(15, 97, 163)",
-      color: "rgb(5, 30, 51)",
+      background: "red",
+      color: "white",
       // and special properties
       duration: 1,
     });
@@ -257,11 +321,10 @@ function toggleLCD() {
 }
 
 function toggleCtrl() {
-  cs.CtrlCmd = 1 - cs.CtrlCmd;
 
   let obj = {
     TorqueCtrl: {
-      CtrlCmd: cs.CtrlCmd,
+      CtrlCmd: 1 - cs.TorqueStatus,
       RetryCount: 0,
       Seril: 5,
     },
@@ -347,16 +410,44 @@ function sendJSON(obj) {
   ws.send(JSON.stringify(obj));
 }
 
+
+
+
+const videoTime = document.getElementById("videoTime");
+const videoSpeed = document.getElementById("videoSpeed");
+
+function speedChanged() {
+  videoTime.value = Math.round(891000 / videoSpeed.value / 1000);
+}
+
+function timeChanged() {
+  videoSpeed.value = Math.round(891000 / videoTime.value / 1000);
+  if (videoSpeed.value > 44) {
+    alert("Speed should not exceed 44%.")
+  }
+}
+
 function videoParam() {
   let obj = {
     VideoParam: {
       Delay: 0,
       LoopCmd: cs.LoopCmd,
       Shutter: -1,
-      Speed: 1,
-      Time: 20000,
+      Speed: videoSpeed * 10,
+      Time: videoTime.value * 1000,
       RetryCount: 0,
       Seril: 18,
+    },
+  };
+  sendJSON(obj);
+}
+
+function callBack() {
+  let obj = {
+    CallBack: {
+      Code: cs.Code,
+      RetryCount: 0,
+      Seril: cs.Seril,
     },
   };
   sendJSON(obj);
@@ -366,6 +457,7 @@ function standby() {
   obj = {
     BackOrigin: {
       Direction: cs.RunDir,
+      OriginCmd: cs.OriginStatus,
       OriginCmd: 1,
       RetryCount: 0,
       Seril: 7
@@ -393,8 +485,6 @@ function videoStart() {
 }
 
 function videoStop() {
-  // @TR{"VideoStart":{"Direction":1,"RepType":0,"VideoRun":3,"RetryCount":1,"Seril":19}}
-  console.log("cs.Direction: " + cs.Direction);
   obj = {
     VideoStart: {
       Direction: cs.RunDir,
@@ -405,16 +495,14 @@ function videoStop() {
     },
   };
   sendJSON(obj);
-  changeStartButtonState("standby");
 }
-
 
 
 function updateVelocity() {
   let obj = {
     AdjPosition: {
       P_Velocity: Math.round(panSpeed),
-      PanPos: 0,
+      //PanPos: 0,
       S_Velocity: Math.round(sliderSpeed),
       //SliderPos: 0,
       //TurnDir: 0,
@@ -442,34 +530,65 @@ let panSpeed = 0;
 
 sliderFactory(sliderStickElement, (value) => {
   sliderSpeed = value * speed;
-  if (!cs.CtrlCmd) return; // Don't run if CTRL btn is red.
+  if (!cs.TorqueStatus) return; // Don't run if CTRL btn is red.
 
-  // if (sliderSpeed === 0 || (sliderSpeed != lastSliderValueSent && Date.now() - lastSliderSent > timeout)) {
   if (sliderSpeed === 0 || Date.now() - lastSliderSent > timeout) {
     lastSliderValueSent = sliderSpeed;
     lastSliderSent = Date.now();
     updateVelocity();
-    changeStartButtonState("standby");
   }
 });
 
 sliderFactory(panStickElement, (value) => {
   panSpeed = value * speed;
-  if (!cs.CtrlCmd) return; // Don't run if CTRL btn is red.
+  if (!cs.TorqueStatus) return; // Don't run if CTRL btn is red.
 
-  // if (panSpeed === 0 || (panSpeed != lastPanValueSent && Date.now() - lastPanSent > timeout)) {
   if (panSpeed === 0 || Date.now() - lastPanSent > timeout) {
     lastPanValueSent = panSpeed;
     lastPanSent = Date.now();
     updateVelocity();
-    changeStartButtonState("standby");
   }
 });
 
 function updatePositions() {
-  const normalizedPos = (cs.Slider1 / 100 - 0.1) * 160;
-  const sliderpan = document.getElementById("actual-panContainer");
+  moveElement("actual-panContainer", cs.Slider1, cs.Pan1);
+  moveElement("A-panContainer", cs.SliderAPos, cs.PanAPos);
+  moveElement("B-panContainer", cs.SliderBPos, cs.PanBPos);
+}
 
-  sliderpan.style.setProperty("--rot", cs.Pan1 + "deg");
-  sliderpan.style.setProperty("--pos", normalizedPos + "px");
+
+function moveElement(ID, sliderVal, panVal) {
+  const normalizedPos = (sliderVal / 100 - 0.1) * 160;
+  const element = document.getElementById(ID);
+
+  element.style.setProperty("--rot", panVal + "deg");
+  element.style.setProperty("--pos", normalizedPos + "px");
+}
+
+function runningPositions(percentage) {
+  const runningDirection = cs.RunDir === 1 ? -1 : 1;
+
+  let sliderendValue = cs.SliderAPos;
+  let sliderstartValue = cs.SliderBPos;
+  let panendValue = cs.PanAPos;
+  let panstartValue = cs.PanBPos;
+  if (cs.RunDir === 0) {
+    sliderendValue = cs.SliderBPos;
+    sliderstartValue = cs.SliderAPos;
+    panendValue = cs.PanBPos;
+    panstartValue = cs.PanAPos;
+  }
+
+  // Calculate the difference between the start and end values
+  var sliderdifference = sliderendValue - sliderstartValue;
+  var pandifference = panendValue - panstartValue;
+
+  // Calculate the new value based on the percentage
+  var sliderVal = sliderstartValue + (sliderdifference * percentage / 100);
+  var panVal = panstartValue + (pandifference * percentage / 100);
+
+  const element = document.getElementById("actual-panContainer");
+
+  //Move element accordingly
+  moveElement("actual-panContainer", sliderVal, panVal);
 }
