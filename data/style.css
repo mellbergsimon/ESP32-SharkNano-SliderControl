@@ -275,3 +275,17 @@ img {
   border-color: #2196F3;
   box-shadow: 0 0 5px #2196F3;
 }
+
+#footer {
+  position: absolute;
+  font-family: source-code-pro;
+  margin: 0;
+  bottom: 1vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  #author{
+    font-size: small;
+  }
+}
