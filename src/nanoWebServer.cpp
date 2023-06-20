@@ -104,6 +104,7 @@ void websetup()
   {
     if (ETH.linkUp())
     {
+      Serial.println("Connecting to Ethernet");
       // Enable DHCP for Ethernet
       if (ETH.config(IPAddress(), IPAddress(), IPAddress(), IPAddress()))
       {
@@ -128,55 +129,53 @@ void websetup()
     }
     else
     {
-      Serial.println("Ethernet cable is not connected");
-    }
-  }
-  else
-  {
-    // Start the Wi-Fi connection
-    Serial.print("Connecting to ");
-    Serial.println(ssid);
-    WiFi.begin(ssid, password);
+      Serial.println("Ethernet cable is not connected, trying wifi.");
 
-    // Wait for Wi-Fi connection to be established
-    while (WiFi.status() != WL_CONNECTED)
+      // Start the Wi-Fi connection
+      Serial.print("Connecting to ");
+      Serial.println(ssid);
+      WiFi.begin(ssid, password);
+
+      // Wait for Wi-Fi connection to be established
+      while (WiFi.status() != WL_CONNECTED)
+      {
+        delay(500);
+        Serial.print(".");
+      }
+
+      Serial.println("Wi-Fi connected");
+      Serial.print("IP address: ");
+      Serial.println(WiFi.localIP());
+    }
+
+    // Start SPIFFS
+    if (!SPIFFS.begin())
     {
-      delay(500);
-      Serial.print(".");
+      Serial.println("An Error has occurred while mounting SPIFFS");
+      return;
+    }
+    else
+    {
+      Serial.println("SPIFFS started successfully.");
     }
 
-    Serial.println("Wi-Fi connected");
-    Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
+    Serial.println("Initializing MDNS 'sharkNano-Server'");
+    MDNS.begin("sharkNano-server");
+
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Methods", "GET, PUT");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "*");
+
+    server.onRequestBody(handleRequest);
+
+    websock.onEvent(onWsEvent);
+
+    server.addHandler(&websock);
+
+    server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.html");
+
+    server.begin();
   }
-
-  // Start SPIFFS
-  if (!SPIFFS.begin())
-  {
-    Serial.println("An Error has occurred while mounting SPIFFS");
-    return;
-  }
-  else
-  {
-    Serial.println("SPIFFS started successfully.");
-  }
-
-  Serial.println("Initializing MDNS 'sharkNano-Server'");
-  MDNS.begin("sharkNano-server");
-
-  DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
-  DefaultHeaders::Instance().addHeader("Access-Control-Allow-Methods", "GET, PUT");
-  DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "*");
-
-  server.onRequestBody(handleRequest);
-
-  websock.onEvent(onWsEvent);
-
-  server.addHandler(&websock);
-
-  server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.html");
-
-  server.begin();
 }
 
 /**
