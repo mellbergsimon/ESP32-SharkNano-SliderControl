@@ -228,6 +228,8 @@ void writeToBLE(String packet)
   if (!connected)
   {
     Serial.println("Not connected to bluetooth");
+    // BLEDevice::getScan()->stop();
+    // BLEDevice::getScan()->start(0, false);
     return;
   }
   if (pWChr->canWrite())
@@ -295,6 +297,8 @@ void bluetoothLoop()
   else if (doScan)
   {
     Serial.println("Lost connection to BLE");
-    BLEDevice::getScan()->start(0); // this is just eample to start scan after disconnect, most likely there is better way to do it in arduino
+    BLEDevice::getScan()->stop();
+    BLEDevice::getScan()->clearResults();
+    BLEDevice::getScan()->start(0, false); // this is just eample to start scan after disconnect, most likely there is better way to do it in arduino
   }
 }

@@ -42,6 +42,8 @@ function connect() {
     console.log("Connected.");
     reconnectBluetooth();
     getAll();
+    platformType();
+    mode();
   };
 
   ws.onmessage = function (e) {
@@ -87,7 +89,7 @@ function newMessage(event) {
         return;
       } else if (buttonState == "start") {
         videoStart();
-        videoLoop();
+        if (cs.LoopCmd == 0) videoLoop();
       }
     } else if (data.Companion.RunCommand == 0) { //RunCommand 0
       if (buttonState == "stop") videoStop();
@@ -153,9 +155,11 @@ function newMessage(event) {
       runState = false;
       changeStartButtonState("standby");
 
-    } else if (data.VideoStart.AllDone === 1) {
+    } else if (data.VideoStart.AllDone === 1 && runState == true) {
+      console.log("Run completed.");
       runState = false;
       changeStartButtonState("standby");
+      changeDirectionIfAorB();
 
     }
   }
@@ -173,6 +177,14 @@ function newMessage(event) {
     cs.RunDir = cs.Direction;
     cs.SetA = cs.SetAStatus;
     cs.SetB = cs.SetBStatus;
+  }
+
+  if ("ManualCallBack" in data) {
+    manualCallBack();
+  }
+
+  if ("SetPoint" in data) {
+    speedChanged();
   }
 
   if (runState == false && ("PositionInfo" in data || "AdjPosition" in data)) {
@@ -207,6 +219,8 @@ function updateBattery() {
 
   batLevel.innerText = cs.Battery + "%";
 }
+
+
 
 function changeStartButtonState(state) {
   if (state == "stop") {
@@ -371,6 +385,40 @@ function toggleB() {
   sendJSON(obj);
 }
 
+function mode() {
+  let obj = {
+    "Mode": {
+      "Platform": 1,
+      "RunMode": 1,
+      "RetryCount": 0,
+      "Seril": 3
+    }
+  }
+  sendJSON(obj);
+}
+
+function manualCallBack() {
+  let obj = {
+    "ManualCallBack": {
+      "Code": cs.Code,
+      "RetryCount": 0,
+      "Seril": cs.Seril
+    }
+  }
+  sendJSON(obj);
+}
+
+function platformType() {
+  let obj = {
+    "PlatformType": {
+      "Platform": 161,
+      "RetryCount": 0,
+      "Seril": 0
+    }
+  }
+  sendJSON(obj);
+}
+
 function videoLoop() {
   let obj = {
     Loop: {
@@ -426,16 +474,24 @@ function sendJSON(obj) {
 const videoTime = document.getElementById("videoTime");
 const videoSpeed = document.getElementById("videoSpeed");
 
+
 function speedChanged() {
-  videoTime.value = Math.round(891000 / videoSpeed.value / 1000);
+  if (videoSpeed.value > 44) {
+    alert("Speed should not exceed 44%.");
+  }
+  videoTime.value = Math.round(450 * Math.abs(cs.SliderAPos - cs.SliderBPos) / videoSpeed.value / 100);
 }
 
 function timeChanged() {
-  videoSpeed.value = Math.round(891000 / videoTime.value / 1000);
+  var oldSpeed = videoSpeed.value;
+  videoSpeed.value = Math.round(14400 / videoTime.value / 100);
   if (videoSpeed.value > 44) {
-    alert("Speed should not exceed 44%.")
+    alert("Speed should not exceed 44%.");
+    videoSpeed.value = oldSpeed;
   }
 }
+
+
 
 function videoParam() {
   let obj = {
@@ -463,7 +519,19 @@ function callBack() {
   sendJSON(obj);
 }
 
+function changeDirectionIfAorB() {
+  //Make slider start from origin.
+  if (cs.Slider1 == cs.SliderBPos) {
+    directionButton();
+  } else if (cs.Slider1 == cs.SliderAPos) {
+    directionButton();
+  }
+}
+
 function standby() {
+
+  changeDirectionIfAorB();
+
   obj = {
     BackOrigin: {
       Direction: cs.RunDir,
