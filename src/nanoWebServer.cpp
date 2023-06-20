@@ -51,15 +51,14 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
   }
 }
 
-
 /**
  * @brief Handle incoming HTTP requests.
- * 
- * @param request 
- * @param data 
- * @param len 
- * @param index 
- * @param total 
+ *
+ * @param request
+ * @param data
+ * @param len
+ * @param index
+ * @param total
  */
 void handleRequest(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
 {
@@ -100,21 +99,56 @@ void websetup()
     Serial.begin(115200);
   }
 
-  // Connect to Wi-Fi network with SSID and password
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED)
+  // Check if Ethernet is available
+  if (ETH.begin())
   {
-    delay(500);
-    Serial.print(".");
-  }
+    if (ETH.linkUp())
+    {
+      // Enable DHCP for Ethernet
+      if (ETH.config(IPAddress(), IPAddress(), IPAddress(), IPAddress()))
+      {
+        Serial.println("DHCP enabled");
+        delay(2000); // Add a delay to allow DHCP negotiation
 
-  // Print local IP address and start web server
-  Serial.println("");
-  Serial.println("WiFi connected.");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
+        // Check if an IP address is obtained
+        if (ETH.localIP() == IPAddress(0, 0, 0, 0))
+        {
+          Serial.println("Failed to obtain IP address");
+        }
+        else
+        {
+          Serial.print("IP address: ");
+          Serial.println(ETH.localIP());
+        }
+      }
+      else
+      {
+        Serial.println("Failed to enable DHCP");
+      }
+    }
+    else
+    {
+      Serial.println("Ethernet cable is not connected");
+    }
+  }
+  else
+  {
+    // Start the Wi-Fi connection
+    Serial.print("Connecting to ");
+    Serial.println(ssid);
+    WiFi.begin(ssid, password);
+
+    // Wait for Wi-Fi connection to be established
+    while (WiFi.status() != WL_CONNECTED)
+    {
+      delay(500);
+      Serial.print(".");
+    }
+
+    Serial.println("Wi-Fi connected");
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+  }
 
   // Start SPIFFS
   if (!SPIFFS.begin())

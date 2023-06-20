@@ -5,6 +5,7 @@
 #include <WiFi.h>
 #include <wifiinfo.h>
 #include "nanoBluetooth.h"
+#include <ETH.h>
 
 #include "ESPAsyncWebServer.h"
 #include "ESPmDNS.h"
