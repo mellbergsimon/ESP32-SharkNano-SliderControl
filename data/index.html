@@ -15,7 +15,7 @@
 
     <div id="container">
       <button id="direction" onclick="directionButton()">Direction</button>
-      <button id="loop" onclick="loopButton()">
+      <button id="loopButton" onclick="videoLoop()">
         <img class="icons" src="./icons/repeat-outline.svg" alt="" />
       </button>
 
@@ -84,7 +84,7 @@
     </div>
 
     <div id="videoParams">
-      <h2>Video Parameters:</h2>
+      <h2>Parameters:</h2>
       <span>Time (s): </span>
       <input
         class="input-field"
@@ -109,6 +109,19 @@
         step="1"
         value="40"
         onchange="speedChanged()"
+      />
+      <br />
+      <span>Slider and Pan Speed: </span>
+      <input
+        class="input-field"
+        type="number"
+        name="sliderpanSpeed"
+        id="sliderpanSpeed"
+        min="1"
+        max="20"
+        step="1"
+        value="15"
+        onchange="sliderpanspeedChanged()"
       />
     </div>
 

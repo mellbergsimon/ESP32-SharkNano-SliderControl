@@ -51,6 +51,47 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
   }
 }
 
+
+/**
+ * @brief Handle incoming HTTP requests.
+ * 
+ * @param request 
+ * @param data 
+ * @param len 
+ * @param index 
+ * @param total 
+ */
+void handleRequest(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+{
+  if (request->contentType() == "application/json")
+  {
+    // Handle the incoming data here
+    // You can accumulate the data and process it later
+
+    // To send a response immediately, you can use the following code:
+    // request->send(200, "text/plain", "Data received");
+
+    // To send a response after processing the complete request body, you can check if index + len equals total
+    if (index + len == total)
+    {
+      // Complete request body received, process the data here
+      // String requestBody = String(reinterpret_cast<char*>(data), len);
+      // Process the request body
+      // ...
+      sendJsontoWeb((char *)data, len);
+
+      data[0] = '\0';
+      //  Send a response
+      request->send(200, "text/plain", "Data received and processed");
+    }
+  }
+  else
+  {
+    Serial.println("Did not receive Companion.");
+    request->send(400, "text/plain", "Data received but not processed");
+  }
+}
+
 void websetup()
 {
   // Start serial if not available
@@ -93,6 +134,8 @@ void websetup()
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Methods", "GET, PUT");
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "*");
 
+  server.onRequestBody(handleRequest);
+
   websock.onEvent(onWsEvent);
 
   server.addHandler(&websock);
@@ -111,10 +154,11 @@ void websetup()
 void sendJsontoWeb(char *jsonInput, int length)
 {
   // Send jsonInput to websock
-  if (websock.availableForWriteAll())
+  while (websock.availableForWriteAll() == false)
   {
-    //Serial.print("Sending to websocket: ");
-    //Serial.println(jsonInput);
-    websock.textAll(jsonInput, length);
+    delay(10); // Wait for a short duration (e.g., 10 milliseconds) before checking again
   }
+  // Serial.print("Sending to websocket: ");
+  // Serial.println(jsonInput);
+  websock.textAll(jsonInput, length);
 }

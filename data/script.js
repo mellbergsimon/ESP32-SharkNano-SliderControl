@@ -80,6 +80,22 @@ function newMessage(event) {
   //Log the data
   console.log(data);
 
+  if ("Companion" in data) {
+    if (data.Companion.RunCommand == 1) {
+      if (buttonState == "standby") {
+        standby();
+        return;
+      } else if (buttonState == "start") {
+        videoStart();
+        videoLoop();
+      }
+    } else if (data.Companion.RunCommand == 0) { //RunCommand 0
+      if (buttonState == "stop") videoStop();
+    }
+    if (data.Companion.Loop == 1) videoLoop();
+    return;
+  }
+
   //Save the data from input.
   Object.entries(data).forEach(([key, value]) => {
     Object.entries(value).forEach(([nestedKey, nestedValue]) => {
@@ -114,9 +130,7 @@ function newMessage(event) {
   //Below is what will need to happen at each different input.
 
   if ("AdjPosition" in data) {
-    console.log("Pan1: " + cs.Pan1 + ", PanActualPos: " + cs.PanActualPos);
     cs.Pan1 = cs.PanActualPos;
-    console.log("Pan1: " + cs.Pan1 + ", PanActualPos: " + cs.PanActualPos);
   }
 
   if ("PositionInfo" in data) {
@@ -125,22 +139,24 @@ function newMessage(event) {
     }
   }
 
+  //Set runState etc.
   if ("VideoStart" in data) {
-    if (data.VideoStart.AllDone === 1) {
-      runState = false;
-      changeStartButtonState("standby");
+    if (data.VideoStart.StartMode === 2) {
+      changeStartButtonState("stop");
+      runState = true;
+
+    } else if (data.VideoStart.AllDone === 0 && data.VideoStart.StartMode !== 0) {
+      runState = true;
+      changeStartButtonState("stop");
 
     } else if (data.VideoStart.StartMode === 0) {
       runState = false;
       changeStartButtonState("standby");
 
-    } else if (data.VideoStart.StartMode === 2) {
-      changeStartButtonState("stop");
-      runState = true;
+    } else if (data.VideoStart.AllDone === 1) {
+      runState = false;
+      changeStartButtonState("standby");
 
-    } else if (data.VideoStart.AllDone === 0) {
-      runState = true;
-      changeStartButtonState("stop");
     }
   }
 
@@ -198,11 +214,11 @@ function changeStartButtonState(state) {
     showButtons("stop");
 
   } else if (state == "standby") {
-    buttonState == "standby";
+    buttonState = "standby";
     showButtons("standby");
 
   } else if (state == "start") {
-    buttonState == "start";
+    buttonState = "start";
     showButtons("start");
   }
 }
@@ -248,7 +264,7 @@ function updateBtnBackgrounds() {
   gsapChange("btn-ctrl", cs.TorqueStatus);
   handleAB("btn-a", cs.SetA);
   handleAB("btn-b", cs.SetB);
-  gsapChange("loop", cs.LoopCmd);
+  gsapChange("loopButton", cs.LoopCmd);
   gsapChange("direction", cs.RunDir);
 }
 
@@ -355,7 +371,7 @@ function toggleB() {
   sendJSON(obj);
 }
 
-function loopButton() {
+function videoLoop() {
   let obj = {
     Loop: {
       LoopCmd: 1 - cs.LoopCmd,
@@ -427,7 +443,7 @@ function videoParam() {
       Delay: 0,
       LoopCmd: cs.LoopCmd,
       Shutter: -1,
-      Speed: videoSpeed * 10,
+      Speed: videoSpeed.value * 10,
       Time: videoTime.value * 1000,
       RetryCount: 0,
       Seril: 18,
@@ -506,11 +522,13 @@ function updateVelocity() {
   sendJSON(obj);
 }
 
+
+
 const sliderStickElement = document.getElementById("sliderstick");
 const panStickElement = document.getElementById("panstick");
 
 const timeout = 100;
-const speed = 20;
+let speed = document.getElementById("sliderpanSpeed").value;
 
 let lastSliderValueSent = 0;
 let lastSliderSent = Date.now() - timeout;
@@ -520,6 +538,7 @@ let lastPanSent = Date.now() - timeout;
 
 let sliderSpeed = 0;
 let panSpeed = 0;
+
 
 sliderFactory(sliderStickElement, (value) => {
   sliderSpeed = value * speed;
@@ -542,6 +561,14 @@ sliderFactory(panStickElement, (value) => {
     updateVelocity();
   }
 });
+
+function sliderpanspeedChanged() {
+  speed = document.getElementById("sliderpanSpeed").value;
+  if (speed > 20) {
+    alert("Please select a value between 1 and 20");
+    document.getElementById("sliderpanSpeed").value = 15;
+  }
+}
 
 function updatePositions() {
   moveElement("actual-panContainer", cs.Slider1, cs.Pan1);

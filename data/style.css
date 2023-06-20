@@ -224,7 +224,7 @@ h2 {
 }
 
 
-#loop {
+#loopButton {
   position: relative;
   display: flex;
   justify-content: center;
