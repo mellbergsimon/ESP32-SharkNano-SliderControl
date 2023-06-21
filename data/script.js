@@ -137,7 +137,11 @@ function newMessage(event) {
 
   if ("PositionInfo" in data) {
     if (runState === false) {
-      cs.OriginStatus === 1 ? changeStartButtonState("start") : changeStartButtonState("standby");
+      if (cs.OriginStatus === 1 && cs.SetA === 1 && cs.SetB === 1) {
+        changeStartButtonState("start")
+      } else {
+        changeStartButtonState("standby");
+      }
     }
   }
 
@@ -398,6 +402,7 @@ function mode() {
 }
 
 function manualCallBack() {
+
   let obj = {
     "ManualCallBack": {
       "Code": cs.Code,
@@ -509,6 +514,7 @@ function videoParam() {
 }
 
 function callBack() {
+
   let obj = {
     CallBack: {
       Code: cs.Code,
@@ -529,6 +535,12 @@ function changeDirectionIfAorB() {
 }
 
 function standby() {
+
+
+  if (cs.SetA === 0 || cs.SetB === 0) {
+    alert("Please set A and B");
+    return;
+  }
 
   changeDirectionIfAorB();
 
@@ -576,18 +588,28 @@ function videoStop() {
 }
 
 function updateVelocity() {
+  let turnDir = 0;
+  if (panSpeed < 0) {
+    turnDir = 0;
+  } else if (panSpeed > 0) {
+    turnDir = 1;
+  }
+
+
   let obj = {
     AdjPosition: {
       P_Velocity: Math.round(panSpeed),
-      //PanPos: 0,
+      PanPos: cs.Pan1,
       S_Velocity: Math.round(sliderSpeed),
-      //SliderPos: 0,
-      //TurnDir: 0,
-      //RetryCount: 0,
+      SliderPos: cs.Slider1,
+      TurnDir: turnDir,
+      RetryCount: 0,
       Seril: 4,
     },
   };
   sendJSON(obj);
+
+  //if (panSpeed === 0 && sliderSpeed === 0) manualCallBack();
 }
 
 
