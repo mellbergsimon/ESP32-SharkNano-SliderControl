@@ -230,6 +230,7 @@ void writeToBLE(String packet)
     Serial.println("Not connected to bluetooth");
     // BLEDevice::getScan()->stop();
     // BLEDevice::getScan()->start(0, false);
+    doScan = true;
     return;
   }
   if (pWChr->canWrite())
