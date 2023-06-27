@@ -75,6 +75,32 @@ connect();
 addEventListener("message", (event) => {});
 
 
+function handleCompanion(data) {
+  switch (buttonState) {
+    // Running
+    case "standby":
+      if (!data.Companion.RunCommand) break;
+
+      standby();
+      break;
+    case "start":
+      if (!data.Companion.RunCommand) break;
+
+      videoStart();
+      if (!cs.LoopCmd) videoLoop();
+      break;
+
+      // Not running
+    case "stop":
+      if (data.Companion.RunCommand) break;
+
+      videoStop();
+      break;
+  }
+
+  if (data.Companion.Loop) videoLoop();
+}
+
 function newMessage(event) {
   //Parse JSON string.
   const data = JSON.parse(event.data);
@@ -82,21 +108,8 @@ function newMessage(event) {
   //Log the data
   console.log(data);
 
-  if ("Companion" in data) {
-    if (data.Companion.RunCommand == 1) {
-      if (buttonState == "standby") {
-        standby();
-        return;
-      } else if (buttonState == "start") {
-        videoStart();
-        if (cs.LoopCmd == 0) videoLoop();
-      }
-    } else if (data.Companion.RunCommand == 0) { //RunCommand 0
-      if (buttonState == "stop") videoStop();
-    }
-    if (data.Companion.Loop == 1) videoLoop();
-    return;
-  }
+  //HTTP event runs before anything else.
+  if ("Companion" in data) return handleCompanion(data);
 
   //Save the data from input.
   Object.entries(data).forEach(([key, value]) => {
@@ -104,19 +117,10 @@ function newMessage(event) {
 
 
       // Do not collect PanPos or SliderPos if SetA or SetB is 255.
-      if (value["SetA"] == 255 && nestedKey == "PanAPos") {
-        return;
-      }
-      if (value["SetB"] == 255 && nestedKey == "PanBPos") {
-        return;
-      }
-      if (value["SetA"] == 255 && nestedKey == "SliderAPos") {
-        return;
-      }
-      if (value["SetB"] == 255 && nestedKey == "SliderBPos") {
-        return;
-      }
-
+      if (value["SetA"] == 255 && nestedKey == "PanAPos") return;
+      if (value["SetB"] == 255 && nestedKey == "PanBPos") return;
+      if (value["SetA"] == 255 && nestedKey == "SliderAPos") return;
+      if (value["SetB"] == 255 && nestedKey == "SliderBPos") return;
 
       // Collect values from json input.
       if (nestedValue !== 255 && nestedValue !== 65535) {
