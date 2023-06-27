@@ -295,8 +295,25 @@ function handleAB(ID, value) {
     gsapfunc(ID, "#121212", "white");
   } else if (value == 1) {
     gsapfunc(ID, "red", "white");
+    hideAB(ID, value);
   } else if (value == 0) {
     gsapfunc(ID, "#232323", "fff");
+    hideAB(ID, value);
+  }
+}
+
+function hideAB(ID, value) {
+  var element = null;
+  if (ID === "btn-a") {
+    element = document.getElementById("A-panContainer");
+  } else if (ID === "btn-b") {
+    element = document.getElementById("B-panContainer");
+  }
+
+  if (element) {
+    element.style.visibility = value ? "visible" : "hidden";
+  } else {
+    console.error("Element not found!");
   }
 }
 
