@@ -22,7 +22,7 @@ void setup() {
 // This is the Arduino main loop function.
 void loop() {
   bluetoothLoop();
-
+  
 
   delay(1000); // Delay a second between loops.
 } // End of loop

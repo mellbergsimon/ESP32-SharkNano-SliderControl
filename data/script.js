@@ -2,8 +2,8 @@
  * Simmes controlprogge
  */
 
-let serverURL = "http://sharknano-server.local";
-let websocketURL = "ws://sharknano-server.local/ws";
+let serverURL = "http://192.168.177.54";
+let websocketURL = "ws://192.168.177.54/ws";
 var ws;
 
 //Statemachine
@@ -89,7 +89,7 @@ function newMessage(event) {
         return;
       } else if (buttonState == "start") {
         videoStart();
-        if (cs.LoopCmd == 0) videoLoop();
+        //if (cs.LoopCmd == 0) videoLoop();
       }
     } else if (data.Companion.RunCommand == 0) { //RunCommand 0
       if (buttonState == "stop") videoStop();

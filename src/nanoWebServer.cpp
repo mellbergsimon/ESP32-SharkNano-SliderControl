@@ -109,7 +109,7 @@ void websetup()
       if (ETH.config(IPAddress(), IPAddress(), IPAddress(), IPAddress()))
       {
         Serial.println("DHCP enabled");
-        delay(2000); // Add a delay to allow DHCP negotiation
+        delay(5000); // Add a delay to allow DHCP negotiation
 
         // Check if an IP address is obtained
         if (ETH.localIP() == IPAddress(0, 0, 0, 0))
@@ -159,8 +159,15 @@ void websetup()
       Serial.println("SPIFFS started successfully.");
     }
 
-    Serial.println("Initializing MDNS 'sharkNano-Server'");
-    MDNS.begin("sharkNano-server");
+    if (MDNS.begin("sharkNano-server"))
+    {
+      Serial.println("Initializing MDNS 'sharkNano-Server'");
+    }
+    else
+    {
+      Serial.println("MDNS failed to start.");
+      return;
+    }
 
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Methods", "GET, PUT");
