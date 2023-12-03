@@ -68,7 +68,12 @@ void setup() {
 
 
 void loop() {
+<<<<<<< HEAD
 
+=======
+  bluetoothLoop();
+  
+>>>>>>> c2acbb16e921058a2576fa7d3ac05a15e973ba4d
 
   delay(1000); // Delay a second between loops.
 } // End of loop

@@ -2,10 +2,8 @@
  * Simmes controlprogge
  */
 
-// let serverURL = "http://sliderserver.local";
-let serverURL = "http://192.168.1.79";
-// let websocketURL = "ws://sliderserver.local/ws";
-let websocketURL = "ws://192.168.1.79/ws";
+let serverURL = "http://sharknano-server.local";
+let websocketURL = "ws://sharknano-server.local/ws";
 var ws;
 
 //Statemachine
@@ -110,8 +108,21 @@ function newMessage(event) {
   //Log the data
   console.log(data);
 
-  //HTTP event runs before anything else.
-  if ("Companion" in data) return handleCompanion(data);
+  if ("Companion" in data) {
+    if (data.Companion.RunCommand == 1) {
+      if (buttonState == "standby") {
+        standby();
+        return;
+      } else if (buttonState == "start") {
+        videoStart();
+        if (cs.LoopCmd == 0) videoLoop();
+      }
+    } else if (data.Companion.RunCommand == 0) { //RunCommand 0
+      if (buttonState == "stop") videoStop();
+    }
+    if (data.Companion.Loop == 1) videoLoop();
+    return;
+  }
 
   //Save the data from input.
   Object.entries(data).forEach(([key, value]) => {
