@@ -1,4 +1,4 @@
-body {
+/* body {
   width: 100vw;
   height: 100vh;
 
@@ -87,7 +87,7 @@ button {
   justify-content: left;
   align-items: center;
   
-  /* transition: transform 0.4s linear; */
+
 }
 
 
@@ -129,18 +129,18 @@ button {
   justify-content: center;
   align-items: center;
   position: absolute;
-  top: calc(50% - 65%); /* Adjust the offset as needed */
+  top: calc(50% - 65%);
   left: 50%;
   transform: translateX(-50%);
 }
 
 .letter {
   position: absolute;
-  top: calc(100% + 10px); /* Adjust the offset as needed */
+  top: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%);
-  font-size: 16px; /* Adjust the font size as needed */
-  color: #000; /* Adjust the color as needed */
+  font-size: 16px;
+  color: #000;
 }
 
 p {
@@ -158,13 +158,7 @@ h {
   font-size: 2vh;
 }
 
-#howtouse {
-  position: relative;
-  /* top: 10vh;
-  right: -10vw; */
-  width: 50vw;
-  left: auto;
-}
+
 
 #information {
   position: absolute;
@@ -288,4 +282,4 @@ img {
   #author{
     font-size: small;
   }
-}
+} */

@@ -3,6 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" href="/data/bootstrap/css/bootstrap.min.css">
   </head>
 
   <body>
@@ -10,10 +11,33 @@
     <script defer src="slider.js"></script>
     <script defer src="script.js"></script>
     <script defer src="gsap.min.js"></script>
+    <script defer src="/data/bootstrap/js/bootstrap.min.js"></script>
 
-    <h1>Slider Lappis edition</h1>
+    <!-- <h1>Slider Lappis edition</h1> -->
 
-    <div id="container">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">SimonSlide</a>
+          <a class="nav-link active" aria-current="page" href="/data/index.html">Slider</a>
+          <a class="nav-link" href="/data/src/bmcc.html">BMCC</a>
+          <a class="nav-link" href="/data/src/about.html">About</a>
+      </div>
+    </nav>
+
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+  <!-- <div id="container">
       <button id="direction" onclick="directionButton()">Direction</button>
       <button id="loopButton" onclick="videoLoop()">
         <img class="icons" src="./icons/repeat-outline.svg" alt="" />
@@ -31,6 +55,9 @@
         <button class="btn" id="Reconnect" onclick="reconnectBluetooth()">
           Reconnect
         </button>
+        <button class="btn" id="ReconnectBLE" onclick="reconnectBLE()">
+          Reconnect BLE
+        </button>
       </div>
     </div>
 
@@ -40,9 +67,12 @@
         Start
       </button>
       <button class="btn" onclick="videoStop()" id="btn-videoStop">Stop</button>
+      <button class="btn" onclick="sendBMCCdata()" id="btn-bmccdata">
+        BMCC
+      </button>
     </div>
 
-    <!-- Joysticks start here -->
+ 
     <div style="display: flex">
       <div class="joystick" id="sliderstick">
         <div>
@@ -125,6 +155,35 @@
       />
     </div>
 
+    <div>
+      <br />
+      <span>BMCC Shutter: </span>
+      <input
+        class="input-field"
+        type="range"
+        name="BMCC"
+        id="BMCCShutter"
+        min="353"
+        max="1696"
+        step="1"
+        value="1024"
+        onchange="BMCCparams()"
+      />
+    </div>
+    <div>
+      <div>ShutterAngle
+        <button onclick="BMCC('ShutterAngle', 1696)">+</button>
+        <button onclick="BMCC('ShutterAngle', 353)">-</button>
+      </div>
+      <div>WhiteBalance
+        <button onclick="BMCC('WhiteBalance', 1696)">+</button>
+        <button onclick="BMCC('WhiteBalance', 353)">-</button>
+      </div>  
+      <div>
+        <button onclick="BMCC('ISO', 1696)">ISO UP</button>
+        <button onclick="BMCC('ISO', 353)">DOWN</button>
+      </div>  
+    </div>
     <div id="howtouse">
       <h2>Users guide:</h2>
       <p>Adjust position and set positions A and B.</p>
@@ -138,19 +197,19 @@
       <p>-Adjust speed and/or time as necessary. They affect eachother</p>
     </div>
 
-    <!-- In work... -->
-    <!-- <div class="dropdown" id="selectModeList">
+
     <span>Select Video Mode</span>
     <div class="dropdown-content">
       <button>TimeLapse</button>
       <button>Video</button>
       <button>Stop Motion (not implemented)</button>
     </div>
-  </div> -->
-  </body>
+  </div>
+  
   <footer id="footer">
     <p>iSSRC (iFootage Shark Slider Nano Remote Control)</p>
     <br />
     <p id="author">Made by Simon Mellberg 2023</p>
-  </footer>
+  </footer> -->
+</body>
 </html>

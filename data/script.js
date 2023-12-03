@@ -2,8 +2,10 @@
  * Simmes controlprogge
  */
 
-let serverURL = "http://sharknano-server.local";
-let websocketURL = "ws://sharknano-server.local/ws";
+// let serverURL = "http://sliderserver.local";
+let serverURL = "http://192.168.1.79";
+// let websocketURL = "ws://sliderserver.local/ws";
+let websocketURL = "ws://192.168.1.79/ws";
 var ws;
 
 //Statemachine
@@ -12,22 +14,22 @@ let buttonState = "standby";
 let runState = false;
 
 
-const standbyButton = document.getElementById("btn-standby");
-const videoStartButton = document.getElementById("btn-videoStart");
-const videoStopBtn = document.getElementById("btn-videoStop");
+// const standbyButton = document.getElementById("btn-standby");
+// const videoStartButton = document.getElementById("btn-videoStart");
+// const videoStopBtn = document.getElementById("btn-videoStop");
 
-const directionBtn = document.getElementById("direction");
+// const directionBtn = document.getElementById("direction");
 
 
-// Elements
-const sliderElement = document.getElementById("slider");
+// // Elements
+// const sliderElement = document.getElementById("slider");
 
-const btnLCD = document.getElementById("btn-lcd");
-const btnCtrl = document.getElementById("btn-ctrl");
-const btnA = document.getElementById("btn-a");
-const btnB = document.getElementById("btn-b");
-const btnStart = document.getElementById("btn-start");
-const btnStart2 = document.getElementById("btn-start2");
+// const btnLCD = document.getElementById("btn-lcd");
+// const btnCtrl = document.getElementById("btn-ctrl");
+// const btnA = document.getElementById("btn-a");
+// const btnB = document.getElementById("btn-b");
+// const btnStart = document.getElementById("btn-start");
+// const btnStart2 = document.getElementById("btn-start2");
 
 
 const cs = {};
@@ -722,4 +724,45 @@ function runningPositions(percentage) {
 
   //Move element accordingly
   moveElement("actual-panContainer", sliderVal, panVal);
+}
+
+
+
+
+function reconnectBLE() {
+  let obj = {
+    ReconnectBLE: true
+  };
+  sendJSON(obj);
+}
+
+function sendBMCCdata() {
+  let obj = {
+    BMCC: {
+      REC: 1024,
+      Iris: 1024,
+      Focus: 1024,
+      AutoFocus: 1024,
+      Zoom: 1024,
+      ISO: 1024,
+      ShutterAngle: 1024,
+      WhiteBalance: 1024,
+      AudioLevel: 1024,
+      FrameRate: 1024,
+      Codec: 1024
+    }
+  };
+  sendJSON(obj);
+}
+
+
+function BMCCparams() {
+
+  BMCCShutter = parseInt(document.getElementById("BMCCShutter").value);
+  let obj = {
+    BMCC: {
+      FrameRate: BMCCShutter
+    }
+  };
+  sendJSON(obj);
 }

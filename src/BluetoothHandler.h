@@ -1,8 +1,7 @@
-#ifndef nanoBluetooth_H
-#define nanoBluetooth_H
+#ifndef BluetoothHandler_H
+#define BluetoothHandler_H
 
 #include "NimBLEDevice.h"
-#include "nanoWebServer.h"
 
 // The remote service we wish to connect to.
 static BLEUUID serviceUUID("0000FFF0-0000-1000-8000-00805F9B34FB");
@@ -16,6 +15,28 @@ static BLERemoteCharacteristic* pWChr;
 static BLERemoteCharacteristic* pRChr;
 static BLEAdvertisedDevice* myDevice;
 
+class BluetoothHandler {
+  public:
+    BluetoothHandler();
+    void connect();
+    void BluetoothEvent(  BLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* pData, size_t length, bool isNotify);
+    void writeToBLE(String packet);
+
+    //Callback;
+    void setCallback(std::function<void(char*)> callback);
+
+  private:
+    bool connectToServer();
+    bool isJsonComplete(const char* data, size_t length);
+    void removeWhitespace(char* str);
+
+
+    void handleJson(char *jsonstr);
+
+    std::function<void(char*)> dataCallback;
+};
+
+
 
 class MyClientCallback : public BLEClientCallbacks {
   void onConnect(BLEClient* pclient) {
@@ -23,13 +44,13 @@ class MyClientCallback : public BLEClientCallbacks {
 
   void onDisconnect(BLEClient* pclient) {
     connected = false;
-    Serial.println("onDisconnect");
+    Serial.println("Ble disconnected");
   }
 };
 
-/**
- * Scan for BLE servers and find the first one that advertises the service we are looking for.
- */
+// /**
+//  * Scan for BLE servers and find the first one that advertises the service we are looking for.
+//  */
 class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
  /**
    * Called for each advertising BLE server.
@@ -56,18 +77,8 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
   } // onResult
 }; // MyAdvertisedDeviceCallbacks
 
-bool isJsonComplete(const char* data, size_t length);
-void removeWhitespace(char* str);
 
-static void notifyCallback(  BLERemoteCharacteristic* pBLERemoteCharacteristic,
-  uint8_t* pData, size_t length, bool isNotify);
 
-void writeToBLE(String packet);
 
-bool connectToServer();
-void bluetoothsetup();
-void bluetoothLoop();
-
-void handleJson(char *jsonstr);
 
 #endif

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/data/bootstrap/css/bootstrap.min.css" />
+  </head>
+
+  <body>
+    <script defer src="bmcc.js"></script>
+    <script defer src="/data/src/websocket.js"></script>
+    <script defer src="/data/gsap.min.js"></script>
+    <script defer src="/data/bootstrap/js/bootstrap.min.js"></script>
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">SimonSlide</a>
+        <a class="nav-link active" aria-current="page" href="/data/index.html">Slider</a>
+        <a class="nav-link" href="/data/src/bmcc.html">BMCC</a>
+        <a class="nav-link" href="/data/src/about.html">About</a>
+      </div>
+    </nav>
+
+
+
+
+    <div class="btn-group" role="banner" aria-label="ShutterAngle">
+      <button type="button" class="btn btn-primary" onclick="myBMCC.sendBMCC('ShutterAngle', 1692)">ShutterAngle +</button>
+      <button type="button" class="btn btn-primary" onclick="myBMCC.sendBMCC('ShutterAngle', 1024)">|</button>
+      <button type="button" class="btn btn-primary" onclick="myBMCC.sendBMCC('ShutterAngle', 353)">ShutterAngle -</button>
+    </div>
+    <br>
+    <div class="btn-group" role="banner" aria-label="WhiteBalance">
+      <button type="button" class="btn btn-primary" onclick="myBMCC.sendBMCC('WhiteBalance', 1692)">WhiteBalance +</button>
+      <button type="button"class="btn btn-primary" onclick="myBMCC.sendBMCC('WhiteBalance', 1024)">|</button>
+      <button type="button"class="btn btn-primary" onclick="myBMCC.sendBMCC('WhiteBalance', 353)">WhiteBalance -</button>
+    </div>
+    <br>
+    <div class="btn-group" role="banner" aria-label="ISO">
+      <button type="button" class="btn btn-primary" onclick="myBMCC.sendBMCC('ISO', 1692)">ISO +</button>
+      <button type="button" class="btn btn-primary" onclick="myBMCC.sendBMCC('ISO', 1024)">|</button>
+      <button type="button"class="btn btn-primary" onclick="myBMCC.sendBMCC('ISO', 353)">ISO -</button>
+    </div>
+
+    <H1 class="h1">FrameRate</H1>
+    <input  type="range"
+            class="form-range"
+            id="FrameRate"
+            onchange="myBMCC.sendBMCC('FrameRate', this.value)"
+            min="392"
+            max="1692"
+            value="1024"
+            step="180"
+            >
+
+    <H1 class="h1">Codec</H1>
+    <input  type="range"
+            class="form-range"
+            id="Codec"
+            onchange="myBMCC.sendBMCC('Codec', this.value)"
+            min="392"
+            max="1692"
+            value="1024"
+            step="180"
+            >
+
+    <H1 class="h1">Iris</H1>
+    <input  type="range"
+            class="form-range"
+            id="Iris"
+            onchange="myBMCC.sendBMCC('Iris', this.value)"
+            min="392"
+            max="1692"
+            value="1024"
+            step="80"
+            >
+
+    <H1 class="h1">ISO</H1>
+    <input  type="range"
+            class="form-range"
+            id="ISO"
+            onchange="myBMCC.sendBMCC('ISO', this.value)"
+            min="392"
+            max="1692"
+            value="1024"
+            step="180"
+            >
+  </body>
+</html>
