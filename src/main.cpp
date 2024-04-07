@@ -33,6 +33,7 @@ std::string BLEKey = "BLE";
 std::string WIFIKey = "WIFI";
 
 void btn1_click(Button2& btn);
+void btn1_doubleclick(Button2& btn);
 void initDatabase();
 
 unsigned int currentListPosition;
@@ -89,7 +90,8 @@ void setup() {
   rotary->setCounter(0);
 
   btn1.begin(GPIO_NUM_25);
-  btn1.setTapHandler(btn1_click);
+  btn1.setClickHandler(btn1_click);
+  btn1.setDoubleClickHandler(btn1_doubleclick);
 
   db = new Database();
   initDatabase();
@@ -118,6 +120,11 @@ void btn1_click(Button2& btn){
 
 
   // Display->scrollList(MenuItems, currentListPosition);
+  
+}
+
+void btn1_doubleclick(Button2& btn){
+  Serial.println("DoubleClick!");
   
 }
 
@@ -151,16 +158,7 @@ void initDatabase(){
   list_BMCC->items->push(db->createItem("Aperture", buffer_Percent));
   db->addContent(BMCCKey, list_BMCC);
 
-  
-
-  // MenuItems->push(ListItem(0, {"hej"}, "AutoFocus"));
-  // MenuItems->push(ListItem(0, {"hej"}, "Zoom"));
-  // MenuItems->push(ListItem(0, {"hej"}, "ShutterAngle"));
-  // MenuItems->push(ListItem(0, {"hej"}, "WhiteBalance"));
-  // MenuItems->push(ListItem(0, {"hej"}, "FrameRate"));
-  // MenuItems->push(ListItem(0, {"hej"}, "Codec"));
-
-}
+  }
 
 
 item * currentItems;
@@ -177,28 +175,14 @@ void loop() {
 
   Serial.println("");
 
-  //Serial.println(buffer);
-  //Display->print(buffer);
+
   db->updateSelectedParameter(std::string(db->selectedKey), rotary->getCounter());
 
 
   Display->printMenuWithDatabase(db);
 
-  // Serial.print("Rotary: ");
-  // Serial.print(rotary->getCounter());
-  // Serial.print(" selectedParameter: ");
-  // Serial.print(db->getSelectedParameter(BMCCKey));
-  // Serial.println(" ");
 
-  //Display->printList(MenuItems, currentListPosition);
 
-  Serial.print(" Free Heap: ");
-  Serial.print(ESP.getFreeHeap());
-  Serial.print(" MaxAllocHeap: ");
-  Serial.print(ESP.getMaxAllocHeap());
-  Serial.print(" MinAllocHeap: ");
-  Serial.print(ESP.getMinFreeHeap());
-  Serial.print(" - ");
   btn1.loop();
 
 }

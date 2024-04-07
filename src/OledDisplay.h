@@ -2,12 +2,10 @@
 #ifndef oleddisplay_H
 #define oleddisplay_H
 
-
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-
 
 // For the list to function
 #include "database.h"
@@ -47,53 +45,24 @@ static const unsigned char PROGMEM logo_bmp[] =
   0b00000000, 0b00110000 };
 
 
-
-
 class OledDisplay {
 public:
 
     OledDisplay();
 
-    
     void printMenuWithDatabase(Database * db);
-    
     void scrollList(Database * db);
-    // void printList(SecuredLinkedList<ListItem> *listToPrint, unsigned int currentPos);
 
-    // void scrollList(SecuredLinkedList<ListItem> *list, unsigned int currentPos);
-
-    // void initHTTPHTML(AsyncWebServer *server);
 private:
   
   Adafruit_SSD1306 display;
 
   void initDisplay();
-  void testdrawline();      // Draw many lines
-  void testdrawrect();      // Draw rectangles (outlines)
-  void testfillrect();      // Draw rectangles (filled)
-  void testdrawcircle();    // Draw circles (outlines)
-  void testfillcircle();    // Draw circles (filled)
-  void testdrawroundrect(); // Draw rounded rectangles (outlines)
-  void testfillroundrect(); // Draw rounded rectangles (filled)
-  void testdrawtriangle();  // Draw triangles (outlines)
-  void testfilltriangle();  // Draw triangles (filled)
-  void testdrawchar();      // Draw characters of the default font
-  void testdrawstyles();    // Draw 'stylized' characters
-  void testscrolltext();    // Draw scrolling text
-  void testdrawbitmap();
-  void testanimate(const uint8_t *bitmap, uint8_t w, uint8_t h);
 
   void printMenu(Database * db);
   void print(const char *str);
   void printList(Database * db);
-  // void printListToDisplay(SecuredLinkedList<ListItem> *list, unsigned int currentPos);
 };
-
-
-
-
-
-
 
 
 #endif
