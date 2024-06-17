@@ -6,24 +6,19 @@ OledDisplay::OledDisplay(){
 
   display = Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-
   this->initDisplay();
-  display.setRotation(2);
-  
-  
-  // // Invert and restore display, pausing in-between
-  // display.invertDisplay(true);
-  // delay(1000);
-  // display.invertDisplay(false);
-  // delay(1000);
-
-
 }
 
 
 void OledDisplay::print(const char *str){
   display.print(F(str));
 }
+
+
+// void OledDisplay::printBMCC(BMCC *bmcc){
+//   // do something.
+// }
+
 
 void OledDisplay::printMenuWithDatabase(Database * db){
   display.clearDisplay();
@@ -131,10 +126,8 @@ void OledDisplay::initDisplay() {
     for(;;); // Don't proceed, loop forever
   }
   display.setTextWrap(false);
-  // Show initial display buffer contents on the screen --
-  // the library initializes this with an Adafruit splash screen.
+  display.setRotation(2);
   display.display();
-  delay(2000);
-
+  delay(1500);
 
 }

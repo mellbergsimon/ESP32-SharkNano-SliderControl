@@ -1,27 +1,20 @@
 #include "bmcc.h"
 
-// BMCC::BMCC(HardwareSerial *bus, const int8_t rxpin, const int8_t txpin,
-//            const bool inv) : sbus_tx(bus, rxpin, txpin, inv) {
-//     // Initialization logic for the BMCC class, if needed
-//     sbus_tx.Begin();
-//     for (int8_t i = 0; i < data.NUM_CH; i++){
-//       data.ch[i] = 1024;
-//     }
-// }
+
 
 BMCC::BMCC(HardwareSerial *bus, const int8_t rxpin, const int8_t txpin, const bool inv){
   serial = bus;
   serial->begin(100000, SERIAL_8E2, rxpin, txpin, inv);
-  SBUS_Channel_Data[0] = 1024;
-  SBUS_Channel_Data[1] = 1024;
-  SBUS_Channel_Data[2] = 1024;
-  SBUS_Channel_Data[3] = 1024;
-  SBUS_Channel_Data[4] = 1024;
-  SBUS_Channel_Data[5] = 1024;
-  SBUS_Channel_Data[6] = 1024;
-  SBUS_Channel_Data[7] = 1024;
-  SBUS_Channel_Data[8] = 1024;
-  SBUS_Channel_Data[9] = 1024;
+  SBUS_Channel_Data[0] = 512;
+  SBUS_Channel_Data[1] = 512;
+  SBUS_Channel_Data[2] = 512;
+  SBUS_Channel_Data[3] = 512;
+  SBUS_Channel_Data[4] = 512;
+  SBUS_Channel_Data[5] = 512;
+  SBUS_Channel_Data[6] = 512;
+  SBUS_Channel_Data[7] = 512;
+  SBUS_Channel_Data[8] = 512;
+  SBUS_Channel_Data[9] = 512;
   SBUS_Channel_Data[10] = 1024;
   SBUS_Channel_Data[11] = 1024;
   SBUS_Channel_Data[12] = 1024;
@@ -32,6 +25,11 @@ BMCC::BMCC(HardwareSerial *bus, const int8_t rxpin, const int8_t txpin, const bo
   SBUS_Channel_Data[17] = 0;
   SBUS_Failsafe_Active = 1;
   SBUS_Lost_Frame = 1;
+
+  framerate = 0;
+  focus = 0;
+
+  sendSBUSPacket();
 }
 
 void BMCC::updateBMCCFromJSON(char* JSON) {
@@ -84,39 +82,56 @@ void BMCC::printData(){
   }
 }
 
+
+void BMCC::setFrameRate(int FrameRate){
+  framerate = FrameRate;
+}
+int BMCC::getFrameRate(){
+  return framerate;
+}
+
+void BMCC::setFocus(int Focus){
+  focus = Focus;
+}
+
+int BMCC::getFocus(){
+  return focus;
+}
+
+void BMCC::setWhiteBalance(int WhiteBalance){
+  whitebalance = WhiteBalance;
+}
+
+
 const char* BMCC::getCameraParameterName(int parameter) {
   switch(parameter) {
-    case REC:
-      return "REC";
-    case Iris:
-      return "Iris";
-    case Focus:
-      return "Focus";
-    case AutoFocus:
-      return "AutoFocus";
-    case Zoom:
-      return "Zoom";
-    case ISO:
-      return "ISO";
-    case ShutterAngle:
-      return "ShutterAngle";
-    case WhiteBalance:
-      return "WhiteBalance";
-    case AudioLevel:
-      return "AudioLevel";
-    case FrameRate:
-      return "FrameRate";
-    case Codec:
-      return "Codec";
-    default:
-      return "UnknownParameter";
+    case REC: return "REC";
+    case Iris: return "Iris";
+    case Focus: return "Focus";
+    case AutoFocus: return "AutoFocus";
+    case Zoom: return "Zoom";
+    case ISO: return "ISO";
+    case ShutterAngle: return "ShutterAngle";
+    case WhiteBalance: return "WhiteBalance";
+    case AudioLevel: return "AudioLevel";
+    case FrameRate: return "FrameRate";
+    case Codec: return "Codec";
+    default: return "UnknownParameter";
   }
 }
 
 void BMCC::sendSBUSPacket(){
+  upDateSBUSPacket();
   buildSBUSPacket();
   serial->write(SBUS_Packet_Data, 25);
 }
+
+void BMCC::upDateSBUSPacket(){
+  SBUS_Channel_Data[Focus] = focus;
+  SBUS_Channel_Data[WhiteBalance] = whitebalance;
+  SBUS_Channel_Data[FrameRate] = framerate;
+}
+
 
 void BMCC::buildSBUSPacket(){
   for(SBUS_Packet_Position = 0; SBUS_Packet_Position < 25; SBUS_Packet_Position++) SBUS_Packet_Data[SBUS_Packet_Position] = 0x00;  //Zero out packet data

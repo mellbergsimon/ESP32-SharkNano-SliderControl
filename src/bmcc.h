@@ -26,17 +26,19 @@ public:
   void updateBMCCFromJSON(char* JSON);
   void sendSBUSPacket();
 
-  // void setFrameRate(int val);
-  // void setWhiteBalance(int val);
+  void setFrameRate(int FrameRate);
+  int getFrameRate();
+  void setWhiteBalance(int WhiteBalance);
+  void setFocus(int Focus);
+  int getFocus();
 
   void printData();
 private:
-  CameraParameter activeParameter;
-  //void sendBMCCdata();
+  int framerate;
+  int focus;
+  int whitebalance;
 
-  // bfs::SbusTx sbus_tx;
-  // bfs::SbusData data;
-
+  void upDateSBUSPacket();
   void resetSomeBMCCParams();
 
   HardwareSerial* serial;
@@ -44,6 +46,9 @@ private:
   const char* getCameraParameterName(int parameter);
 
   void buildSBUSPacket();
+
+
+
 
   unsigned int SBUS_Channel_Data[18];
   byte SBUS_Current_Channel = 0;
